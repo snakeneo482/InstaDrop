@@ -1,0 +1,8 @@
+<resources>
+    <!-- Base theme is a no-action-bar Material 3 theme; all real styling is
+         done in Compose (see ui/theme). This keeps the splash window neutral. -->
+    <style name="Theme.InstaDrop" parent="android:Theme.Material.NoTitleBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/ink</item>
+    </style>
+</resources>

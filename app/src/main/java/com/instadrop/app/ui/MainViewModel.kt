@@ -5,9 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.instadrop.app.data.ServiceLocator
 import com.instadrop.app.data.download.SavedMedia
-import com.instadrop.app.domain.InstagramUrl
+import com.instadrop.app.domain.Urls
 import com.instadrop.app.domain.model.InstaMedia
 import com.instadrop.app.domain.model.MediaItem
+import com.instadrop.app.domain.model.SourcePlatform
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,7 @@ sealed interface Screen {
     ) : Screen
     data class Done(val media: InstaMedia, val savedCount: Int) : Screen
     data class Error(val message: String, val url: String?) : Screen
+    data object Settings : Screen
 }
 
 class MainViewModel : ViewModel() {
@@ -38,6 +40,7 @@ class MainViewModel : ViewModel() {
     private val downloader = ServiceLocator.downloader
     private val history = ServiceLocator.history
     private val notifier = ServiceLocator.notifier
+    val settings = ServiceLocator.settings
 
     private val _screen = MutableStateFlow<Screen>(Screen.Home)
     val screen: StateFlow<Screen> = _screen.asStateFlow()
@@ -50,14 +53,25 @@ class MainViewModel : ViewModel() {
     private var lastSavedUri: Uri = Uri.EMPTY
 
     fun onSharedText(text: String?) {
-        val url = InstagramUrl.extract(text) ?: return
+        val url = Urls.extract(text) ?: return
         resolve(url)
     }
 
     fun resolve(url: String) {
-        val clean = InstagramUrl.extract(url)
+        val clean = Urls.extract(url)
         if (clean == null) {
-            _screen.value = Screen.Error("That doesn't look like an Instagram link.", url)
+            _screen.value = Screen.Error("That doesn't look like a valid link.", url)
+            return
+        }
+        // Non-Instagram sites need the self-hosted backend. Fail fast with a clear
+        // message instead of a generic extraction error when it isn't set up.
+        val platform = Urls.platformOf(clean)
+        if (platform != SourcePlatform.INSTAGRAM && settings.backendUrl.value.isBlank()) {
+            _screen.value = Screen.Error(
+                "To download ${platform.label} links, add your downloader server URL in " +
+                    "Settings. Instagram works without one.",
+                clean,
+            )
             return
         }
         _screen.value = Screen.Resolving(clean)
@@ -119,6 +133,16 @@ class MainViewModel : ViewModel() {
         lastSavedUri = result.uri
     }
 
+    /** Remove a single item from history (the file on disk is left untouched). */
+    fun removeFromHistory(id: Long) {
+        viewModelScope.launch { history.remove(id) }
+    }
+
+    /** Clear the entire download history list (files on disk are left untouched). */
+    fun clearHistory() {
+        viewModelScope.launch { history.clear() }
+    }
+
     fun cancelDownload() {
         downloadJob?.cancel()
         notifier.cancel(NOTIF_ID)
@@ -129,6 +153,10 @@ class MainViewModel : ViewModel() {
     fun goHome() {
         downloadJob?.cancel()
         _screen.value = Screen.Home
+    }
+
+    fun openSettings() {
+        _screen.value = Screen.Settings
     }
 
     private fun suggestName(media: InstaMedia, index: Int): String {

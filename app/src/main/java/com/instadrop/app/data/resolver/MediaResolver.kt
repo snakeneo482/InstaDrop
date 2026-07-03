@@ -3,12 +3,12 @@ package com.instadrop.app.data.resolver
 import com.instadrop.app.domain.model.InstaMedia
 
 /**
- * Turns an Instagram URL into concrete, downloadable media.
+ * Turns a shared link into concrete, downloadable media.
  *
- * This is the single seam where the actual extraction backend plugs in. The
- * rest of the app (UI, downloader, history) depends only on this interface, so
- * you can swap [StubMediaResolver] for a real implementation — your own backend
- * API, a yt-dlp service, etc. — without touching anything else.
+ * This is the single seam where extraction backends plug in. The rest of the
+ * app (UI, downloader, history) depends only on this interface, so resolvers —
+ * the Cobalt backend, the Instagram GraphQL reader, etc. — can be swapped or
+ * chained without touching anything else.
  */
 interface MediaResolver {
     /**
@@ -17,4 +17,11 @@ interface MediaResolver {
     suspend fun resolve(url: String): InstaMedia
 }
 
-class ResolveException(message: String, cause: Throwable? = null) : Exception(message, cause)
+open class ResolveException(message: String, cause: Throwable? = null) : Exception(message, cause)
+
+/**
+ * Thrown by a backend resolver when it has nothing configured to work with (no
+ * server URL). The [ResolverChain] treats this as "skip me", not as a failure,
+ * so a later resolver's more specific error is what surfaces to the user.
+ */
+class BackendNotConfigured(message: String) : ResolveException(message)

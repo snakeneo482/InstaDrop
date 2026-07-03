@@ -48,6 +48,8 @@ class DownloadHistory(private val dao: DownloadDao) {
 
     suspend fun remove(id: Long) = dao.delete(id)
 
+    suspend fun clear() = dao.deleteAll()
+
     private fun DownloadEntity.toEntry() = DownloadEntry(
         id = id,
         displayName = displayName,

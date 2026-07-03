@@ -27,8 +27,8 @@ android {
         applicationId = "com.instadrop.myapp"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 4
+        versionName = "1.3"
         vectorDrawables { useSupportLibrary = true }
     }
 
@@ -48,11 +48,17 @@ android {
             // Sign the release bundle only when credentials are present, so a
             // plain `assembleDebug` / CI checkout without the keystore still builds.
             signingConfig = if (hasSigningConfig) signingConfigs.getByName("release") else null
-            isMinifyEnabled = false
+            // Shrink + obfuscate with R8 and strip unused resources for a lean
+            // production bundle. Keep rules live in proguard-rules.pro.
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+        }
+        debug {
+            isMinifyEnabled = false
         }
     }
 
@@ -86,4 +92,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    implementation(libs.androidx.core.splashscreen)
+
+    testImplementation(libs.junit)
 }

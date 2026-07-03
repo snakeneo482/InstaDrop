@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  html,body{margin:0;padding:0}
+  *{box-sizing:border-box}
+  .wrap{
+    width:1024px;height:500px;overflow:hidden;position:relative;
+    font-family:"Segoe UI",-apple-system,Roboto,Arial,sans-serif;
+    background:linear-gradient(115deg,#FF5E8A 0%,#E1306C 42%,#7B2FF0 100%);
+  }
+  .glow{position:absolute;inset:0;background:radial-gradient(60% 90% at 22% 18%,rgba(255,255,255,.30),rgba(255,255,255,0) 60%);}
+  .c1{position:absolute;width:520px;height:520px;border-radius:50%;right:-120px;top:-180px;background:rgba(255,255,255,.08);}
+  .c2{position:absolute;width:360px;height:360px;border-radius:50%;right:120px;bottom:-200px;background:rgba(255,255,255,.06);}
+  .row{position:relative;height:100%;display:flex;align-items:center;padding:0 70px;gap:48px}
+  .copy{flex:1;color:#fff}
+  .name{font-size:78px;font-weight:800;letter-spacing:-1.5px;line-height:1;margin:0}
+  .name .drop{color:#FFE3EE}
+  .tag{font-size:30px;font-weight:600;margin:22px 0 0;opacity:.97}
+  .sub{font-size:21px;font-weight:600;margin:26px 0 0;opacity:.9;letter-spacing:.3px}
+  .badge{display:inline-block;margin-top:30px;padding:12px 22px;border-radius:999px;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    color:#fff;font-size:20px;font-weight:700}
+  .art{width:300px;height:300px;flex:0 0 auto;border-radius:64px;
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.30);
+    box-shadow:0 30px 60px rgba(58,11,78,.35);display:flex;align-items:center;justify-content:center}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="glow"></div><div class="c1"></div><div class="c2"></div>
+  <div class="row">
+    <div class="copy">
+      <h1 class="name">Insta<span class="drop">Drop</span></h1>
+      <p class="tag">Save Reels, photos &amp; videos<br/>straight to your gallery.</p>
+      <p class="sub">Share a link → saved in seconds.</p>
+      <span class="badge">Fast · Ad-free · No sign-up</span>
+    </div>
+    <div class="art">
+      <svg width="208" height="208" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M256 70 C188 188 150 224 150 296 a106 106 0 1 0 212 0 C362 224 324 188 256 70 Z" fill="#FFFFFF" opacity="0.16"/>
+        <g fill="none" stroke="#FFFFFF" stroke-width="46" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="256" y1="150" x2="256" y2="312"/>
+          <polyline points="184,256 256,330 328,256"/>
+          <line x1="160" y1="392" x2="352" y2="392"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,57 @@
+# InstaDrop backend — a self-hosted Cobalt instance.
+#
+# Cobalt (https://github.com/imputnet/cobalt) is the open-source engine that
+# extracts media from YouTube, Instagram (incl. Stories with cookies), TikTok,
+# X, Facebook, Reddit, Twitch, Vimeo, SoundCloud and ~1000 more sites.
+#
+# Quick start:
+#   1. Install Docker + Docker Compose.
+#   2. Edit API_URL below to how your phone will reach this machine
+#      (e.g. http://192.168.1.50:9000/ on your LAN, or your https domain).
+#   3. docker compose up -d
+#   4. In InstaDrop → Settings → Downloader server, paste that same URL.
+#
+# See backend/README.md for cookies (Instagram Stories / age-restricted YT),
+# HTTPS, and API-key hardening.
+
+services:
+  cobalt-api:
+    image: ghcr.io/imputnet/cobalt:10
+    init: true
+    read_only: true
+    restart: unless-stopped
+    container_name: cobalt-api
+    ports:
+      - "9000:9000"
+    environment:
+      # MUST match the URL you put in the app. Include the trailing slash.
+      API_URL: "http://localhost:9000/"
+
+      # ---- Optional hardening / features (uncomment as needed) ----
+      # Require an API key from clients (then set the same key in the app):
+      # API_KEY_URL: "file:///keys.json"
+      # Rate limits:
+      # RATELIMIT_WINDOW: "60"
+      # RATELIMIT_MAX: "20"
+      # Duration cap (seconds) for tunnelled media:
+      # DURATION_LIMIT: "10800"
+      # Cookies for logged-in sites (Instagram Stories, private, age-gated YT):
+      # COOKIE_PATH: "/cookies.json"
+
+    labels:
+      - com.centurylinklabs.watchtower.scope=cobalt
+    # Uncomment to mount cookies / api keys (see README):
+    # volumes:
+    #   - ./cookies.json:/cookies.json:ro
+    #   - ./keys.json:/keys.json:ro
+
+  # Keeps the Cobalt image up to date automatically (recommended — extraction
+  # breaks when sites change and Cobalt ships fixes often).
+  watchtower:
+    image: ghcr.io/containrrr/watchtower
+    restart: unless-stopped
+    command: --cleanup --scope cobalt --interval 900
+    labels:
+      - com.centurylinklabs.watchtower.scope=cobalt
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

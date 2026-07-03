@@ -44,8 +44,8 @@ class StubMediaResolver : MediaResolver {
             PostKind.CAROUSEL, PostKind.POST -> InstaMedia(
                 sourceUrl = clean,
                 kind = kind,
-                author = "sample_account",
-                caption = "Sample post caption — swap StubMediaResolver for your backend.",
+                author = "travel.daily",
+                caption = "Golden hour on the coast 🌅 #travel #sunset",
                 items = listOf(
                     MediaItem(MediaType.VIDEO, SAMPLE_VIDEO, SAMPLE_THUMB, durationSeconds = 15, isHd = true),
                 ),
@@ -54,8 +54,8 @@ class StubMediaResolver : MediaResolver {
             else -> InstaMedia(
                 sourceUrl = clean,
                 kind = kind,
-                author = "sample_account",
-                caption = "Sample ${kind.label.lowercase()} — this is stub data.",
+                author = "travel.daily",
+                caption = "A quiet morning walk through the woods 🌳 #reels #nature",
                 items = listOf(
                     MediaItem(MediaType.VIDEO, SAMPLE_VIDEO, SAMPLE_THUMB, durationSeconds = 28, isHd = true),
                 ),
@@ -68,8 +68,8 @@ class StubMediaResolver : MediaResolver {
         const val SAMPLE_VIDEO =
             "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
         const val SAMPLE_THUMB =
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg"
+            "https://picsum.photos/seed/instadrop/720/1280"
         const val SAMPLE_IMAGE =
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerMeltdowns.jpg"
+            "https://picsum.photos/seed/instadrop-photo/1080/1080"
     }
 }

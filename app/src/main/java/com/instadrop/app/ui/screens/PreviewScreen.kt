@@ -1,17 +1,20 @@
 package com.instadrop.app.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ContentCopy
@@ -52,6 +55,7 @@ fun PreviewScreen(
     Column(
         Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(20.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -60,7 +64,7 @@ fun PreviewScreen(
             }
             Spacer(Modifier.size(4.dp))
             Text(
-                "${media.kind.label} detected",
+                media.headline,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )
@@ -68,11 +72,16 @@ fun PreviewScreen(
 
         Spacer(Modifier.height(16.dp))
 
+        // Cap the preview height so the action buttons stay on-screen even for
+        // tall 9:16 portrait media. A tinted surface sits behind the thumbnail
+        // so the area always reads as a media card while the image loads.
         Box(
             Modifier
                 .fillMaxWidth()
-                .aspectRatio(9f / 16f)
-                .clip(RoundedCornerShape(18.dp)),
+                .heightIn(max = 420.dp)
+                .height(420.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
@@ -86,7 +95,7 @@ fun PreviewScreen(
                     Icons.Filled.PlayCircle,
                     contentDescription = null,
                     modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
                 )
             }
         }
@@ -120,7 +129,7 @@ fun PreviewScreen(
             }
         }
 
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(24.dp))
 
         Button(
             onClick = { onDownload(item) },

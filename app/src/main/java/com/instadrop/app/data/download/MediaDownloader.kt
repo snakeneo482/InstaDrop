@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import com.instadrop.app.data.Http
 import com.instadrop.app.domain.model.MediaItem
 import com.instadrop.app.domain.model.MediaType
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +28,10 @@ data class SavedMedia(val uri: Uri, val displayName: String, val sizeBytes: Long
  * MediaStore, so they show up in the gallery with no storage permission on
  * Android 10+. Below 10, the caller must hold WRITE_EXTERNAL_STORAGE.
  */
-class MediaDownloader(private val context: Context) {
-
-    private val client = OkHttpClient()
+class MediaDownloader(
+    private val context: Context,
+    private val client: OkHttpClient = Http.client,
+) {
 
     /**
      * @param onProgress invoked on the IO thread with (percent 0..100, bytesPerSecond).
@@ -40,7 +42,11 @@ class MediaDownloader(private val context: Context) {
         displayName: String,
         onProgress: (percent: Int, bytesPerSecond: Long) -> Unit,
     ): SavedMedia = withContext(Dispatchers.IO) {
-        val request = Request.Builder().url(item.downloadUrl).build()
+        val request = Request.Builder()
+            .url(item.downloadUrl)
+            .header("User-Agent", Http.USER_AGENT)
+            .header("Referer", "https://www.instagram.com/")
+            .build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) throw IOException("Server returned HTTP ${response.code}")
             val body = response.body ?: throw IOException("Empty response body")

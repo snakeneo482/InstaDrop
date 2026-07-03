@@ -9,6 +9,7 @@
 .externalNativeBuild
 .cxx
 app/build/
+.kotlin/
 
 # Signing — keep secrets out of version control
 keystore.properties

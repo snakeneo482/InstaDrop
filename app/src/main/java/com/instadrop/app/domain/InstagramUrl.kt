@@ -25,15 +25,16 @@ object InstagramUrl {
 
     /** Best-effort classification from the URL path. */
     fun classify(url: String): PostKind {
-        val path = url.substringAfter("instagram.com", "")
-            .substringAfter("instagr.am", "")
+        // Everything after the host, without a leading slash, e.g. "reel/Cabc".
+        val path = url.substringAfter("://", url)
+            .substringAfter('/', "")
             .lowercase()
         return when {
-            path.contains("/reel/") || path.contains("/reels/") -> PostKind.REEL
-            path.contains("/stories/") -> PostKind.STORY
-            path.contains("/p/") -> PostKind.POST
-            // /username/ with nothing else is most likely a profile.
-            path.trim('/').count { it == '/' } == 0 && path.length > 1 -> PostKind.PROFILE_PIC
+            path.startsWith("reel/") || path.startsWith("reels/") -> PostKind.REEL
+            path.startsWith("stories/") -> PostKind.STORY
+            path.startsWith("p/") || path.startsWith("tv/") -> PostKind.POST
+            // "username" with nothing after it is most likely a profile.
+            path.isNotEmpty() && !path.trimEnd('/').contains('/') -> PostKind.PROFILE_PIC
             else -> PostKind.UNKNOWN
         }
     }

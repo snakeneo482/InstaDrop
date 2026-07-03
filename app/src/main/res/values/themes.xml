@@ -1,8 +1,19 @@
-<resources>
-    <!-- Base theme is a no-action-bar Material 3 theme; all real styling is
-         done in Compose (see ui/theme). This keeps the splash window neutral. -->
-    <style name="Theme.InstaDrop" parent="android:Theme.Material.NoTitleBar">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Launch theme: shows a centered icon on a brand-ink background while the
+         process starts, then hands off to the Compose UI. Backed by the AndroidX
+         SplashScreen API so it looks right on every API level (12+ natively,
+         back-compat below). All real styling lives in Compose (see ui/theme). -->
+    <style name="Theme.InstaDrop" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ink</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.InstaDrop.Main</item>
+    </style>
+
+    <!-- The real (post-splash) application theme: a no-action-bar Material theme
+         with a transparent system bar so Compose can draw edge-to-edge. -->
+    <style name="Theme.InstaDrop.Main" parent="android:Theme.Material.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@color/ink</item>
     </style>
 </resources>

@@ -6,6 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.instadrop.app.ui.AppRoot
 import com.instadrop.app.ui.MainViewModel
 import com.instadrop.app.ui.theme.InstaDropTheme
@@ -15,10 +18,13 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            InstaDropTheme {
+            val themeMode by viewModel.settings.themeMode.collectAsState()
+            val dynamicColor by viewModel.settings.dynamicColor.collectAsState()
+            InstaDropTheme(themeMode = themeMode, dynamicColor = dynamicColor) {
                 AppRoot(viewModel)
             }
         }

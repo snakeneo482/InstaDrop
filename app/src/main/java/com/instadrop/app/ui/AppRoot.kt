@@ -29,6 +29,7 @@ import com.instadrop.app.ui.screens.ErrorScreen
 import com.instadrop.app.ui.screens.HomeScreen
 import com.instadrop.app.ui.screens.PreviewScreen
 import com.instadrop.app.ui.screens.ResolvingScreen
+import com.instadrop.app.ui.screens.SettingsScreen
 
 @Composable
 fun AppRoot(viewModel: MainViewModel) {
@@ -85,6 +86,9 @@ fun AppRoot(viewModel: MainViewModel) {
                     is Screen.Home -> HomeScreen(
                         downloads = downloads,
                         onSubmitUrl = viewModel::resolve,
+                        onRemove = viewModel::removeFromHistory,
+                        onClearAll = viewModel::clearHistory,
+                        onOpenSettings = viewModel::openSettings,
                     )
 
                     is Screen.Resolving -> ResolvingScreen(url = current.url)
@@ -120,6 +124,11 @@ fun AppRoot(viewModel: MainViewModel) {
                         canRetry = current.url != null,
                         onRetry = { current.url?.let(viewModel::resolve) },
                         onHome = viewModel::goHome,
+                    )
+
+                    is Screen.Settings -> SettingsScreen(
+                        settings = viewModel.settings,
+                        onBack = viewModel::goHome,
                     )
                 }
             }

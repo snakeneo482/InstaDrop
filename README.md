@@ -149,3 +149,11 @@ URL parsing.
 
 Built-in video player · concurrent batch queue ·
 favorites / search in history · premium gating (no ads, unlimited, cloud backup).
+
+## Source-only publication
+
+This repository is shared as source code for learning and reference. No hosted demo or active deployment is provided. Some features require third-party services and your own configuration; API availability is not guaranteed. AI tools assisted development. Review and test the code before using it in production.
+
+## License and dependencies
+
+Original project code is licensed under MIT (see LICENSE). Third-party libraries, bundled code and assets retain their original licenses and notices; the root license does not relicense those materials.
